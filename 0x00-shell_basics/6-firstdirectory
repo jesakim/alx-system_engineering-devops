@@ -1,0 +1,3 @@
+#!/bin/bash
+DIRECTORY_NAME=$(mktemp -d /tmp/my_first_directory.XXXXXX)
+mv "$DIRECTORY_NAME" /tmp/my_first_directory
