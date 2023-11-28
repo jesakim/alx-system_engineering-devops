@@ -1,37 +1,25 @@
-# Install Nginx web server with Puppet
-include stdlib
+# Script to install nginx using puppet
 
-$link = 'https://www.youtube.com/watch?v=QH2-TGUlwu4'
-$content = "\trewrite ^/redirect_me/$ ${link} permanent;"
-
-exec { 'update packages':
-  command => '/usr/bin/apt-get update'
+package {'nginx':
+  ensure => 'present',
 }
 
-exec { 'restart nginx':
-  command => '/usr/sbin/service nginx restart',
-  require => Package['nginx']
+exec {'install':
+  command  => 'sudo apt-get update ; sudo apt-get -y install nginx',
+  provider => shell,
+
 }
 
-package { 'nginx':
-  ensure  => 'installed',
-  require => Exec['update packages']
+exec {'Hello':
+  command  => 'echo "Hello World!" | sudo tee /var/www/html/index.html',
+  provider => shell,
 }
 
-file { '/var/www/html/index.html':
-  ensure  => 'present',
-  content => 'Holberton School',
-  mode    => '0644',
-  owner   => 'root',
-  group   => 'root'
+exec {'sudo sed -i "s/listen 80 default_server;/listen 80 default_server;\\n\\tlocation \/redirect_me {\\n\\t\\treturn 301 https:\/\/blog.ehoneahobed.com\/;\\n\\t}/" /etc/nginx/sites-available/default':
+  provider => shell,
 }
 
-file_line { 'Set 301 redirection':
-  ensure   => 'present',
-  after    => 'server_name\ _;',
-  path     => '/etc/nginx/sites-available/default',
-  multiple => true,
-  line     => $content,
-  notify   => Exec['restart nginx'],
-  require  => File['/var/www/html/index.html']
+exec {'run':
+  command  => 'sudo service nginx restart',
+  provider => shell,
 }

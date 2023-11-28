@@ -1,1 +1,1 @@
-# Scripts Functionalities
+# Solutions to tasks on Web server
