@@ -31,4 +31,4 @@ def number_of_subscribers(subreddit):
         return 0
 
     # Returns the total subscribers of the subreddit
-    return res.json().get('data').get('subscribers',0)
+    return res.json().get('data', {}).get('subscribers', 0)
